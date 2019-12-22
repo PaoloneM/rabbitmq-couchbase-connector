@@ -60,6 +60,10 @@ java -jar CbRabbitConnector-jar-with-dependencies.jar
 - Add Logging
 - Testing
 
+## Disclaimer
+
+This project is not yet tested, use your own risk.
+
 ## License
 This projects is released under the [MIT license](LICENSE.txt).
 
