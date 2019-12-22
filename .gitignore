@@ -1,0 +1,7 @@
+**/target
+**/environment*
+.idea
+.project
+.vscode
+.classpath
+**/*.iml
