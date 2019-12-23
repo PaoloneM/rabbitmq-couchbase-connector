@@ -1,0 +1,19 @@
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: rabbitmq-couchbase-connector
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: rabbitmq-couchbase-connector
+    spec:
+      containers:
+      - name: rabbitmq-couchbase-connector
+        envFrom:
+        - configMapRef:
+            name: rabbit-couchbase-config
+        image: eu.gcr.io/ipatrol-backend/rabbitmq-couchbase-connector:0.2.0
+        imagePullPolicy: Always
