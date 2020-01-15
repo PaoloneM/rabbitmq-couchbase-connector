@@ -12,7 +12,7 @@ class Constants {
     public static final String RABBIT_PORT = "RABBIT_PORT";
     public static final String RABBIT_USER = "RABBIT_USER";
     public static final String RABBIT_PASSWORD = "RABBIT_PASSWORD";
-	public static final String EXCHANGE_NAME = "EXCHANGE_NAME";
+	public static final String EXCHANGE_NAME = "RABBIT_EXCHANGE";
     public static final String QUEUE_NAME = "QUEUE_NAME";
     public static final String STATE_FILE_PATH = "STATE_FILE_PATH";
     public static final String STATE_SAVE_DELAY_SEC = "STATE_SAVE_DELAY_SEC";

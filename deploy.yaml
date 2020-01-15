@@ -15,5 +15,7 @@ spec:
         envFrom:
         - configMapRef:
             name: rabbit-couchbase-config
+        - configMapRef:
+            name: rabbit-client-config
         image: eu.gcr.io/ipatrol-backend/rabbitmq-couchbase-connector:0.2.0
         imagePullPolicy: Always
