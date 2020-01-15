@@ -12,11 +12,13 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 public class DCP_RabbitMQ_Publisher implements DCPEventListener {
 
 	private final Channel channel;
 	private final String EXCHANGE_NAME = System.getenv(Constants.EXCHANGE_NAME);
-	private final String QUEUE_NAME = System.getenv(Constants.QUEUE_NAME);
 
 	public DCP_RabbitMQ_Publisher(final String host, final int port, final String username, final String password)
 			throws IOException, TimeoutException {
@@ -28,19 +30,35 @@ public class DCP_RabbitMQ_Publisher implements DCPEventListener {
 		System.out.println("username: " + username + " - password: " + password);
 		final Connection connection = factory.newConnection();
 		this.channel = connection.createChannel();
-		System.out.println("EXCHANGE_NAME: " + EXCHANGE_NAME + " - QUEUE_NAME: " + QUEUE_NAME);
-		this.channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-		this.channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
-		this.channel.queueBind(QUEUE_NAME, EXCHANGE_NAME, QUEUE_NAME);
+		System.out.println("EXCHANGE_NAME: " + EXCHANGE_NAME);
 
 	}
 
 	public void onEvent(final ByteBuf event) throws UnsupportedEncodingException, IOException {
 		if (DcpMutationMessage.is(event)) {
-			System.out.println("Mutation: " + DcpMutationMessage.toString(event));
+			String docJson  = DcpMutationMessage.content(event).toString(CharsetUtil.UTF_8);
+			System.out.println("Mutation: " + docJson);
+
+			JSONTokener tokener =  new JSONTokener(docJson);
+			JSONObject document = new JSONObject(tokener);
+			
+			String type = "";
+			try {
+				type = document.getString("type");
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+			if(type == null || type.equals("")){
+				type = "UNDEFINED";
+			}
+			String messageKey = "APT." + type + ".MUTATION";
+
+			System.out.println("Message key: " + messageKey);
+
 			final String message = "{" + "\"_id\": \"" + DcpMutationMessage.keyString(event) + "\", \"body\":"
 					+ DcpMutationMessage.content(event).toString(CharsetUtil.UTF_8) + "}";
-			channel.basicPublish(EXCHANGE_NAME, QUEUE_NAME, null, message.getBytes("UTF-8"));
+
+			channel.basicPublish(EXCHANGE_NAME, messageKey, null, message.getBytes("UTF-8"));
 
 		} else if (DcpDeletionMessage.is(event)) {
 			System.out.println("Deletion: " + DcpDeletionMessage.toString(event));

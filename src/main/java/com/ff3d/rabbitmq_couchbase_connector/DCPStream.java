@@ -110,23 +110,19 @@ public class DCPStream implements ConnectorDataEventHandler.ConnectorDataEventHa
 		}
 	}
 
-	@Override
 	public void onRollbackMessageReceived(final short partition, long seqNo) {
 		client.rollbackAndRestartStream(partition, seqNo)
 				.subscribe(new CompletableSubscriber() {
-					@Override
 					public void onCompleted() {
 						System.out.println("Rollback for partition " + partition + " complete!");
 					}
 
-					@Override
 					public void onError(Throwable e) {
 						System.err.println("Rollback for partition " + partition + " failed!");
 						e.printStackTrace();
 						System.exit(2);
 					}
 
-					@Override
 					public void onSubscribe(Subscription d) {
 					}
 				});
