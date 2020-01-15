@@ -27,6 +27,8 @@ target
 The `CbRabbitConnector-jar-with-dependencies.jar` is a full-packaged jar with all dependencies. Just move to your target machine and run.
 
 ## Running the project
+
+### Environment
 Before running the connector you must provide some env vars:
 
 ```shell script
@@ -47,6 +49,35 @@ export STATE_FILE_PATH="<path to file where DCP stream state will be saved>";
 export STATE_SAVE_DELAY_SEC="10";
 ```
 
+### Defining the RabbitMQ message key
+
+You can define the message key by setting the `MESSAGE_KEY` env. If `MESSAGE_KEY` is not defined, the connector will try to build the key from `MESSAGE_KEY_TEMPLATE`, in wich you can store a string with a single variable substitution like `MY.%s.KEY`, by substituting the palceholder with the content of a property of message payload specified by `MESSAGE_KEY_FIELD`.
+If none specified, `UNDEFINED` will be used as message key.
+
+Example
+
+Let's say you have the following environment set:
+
+```
+export MESSAGE_KEY_TEMPLATE=DOC.%s.CHANGE
+export MESSAGE_KEY_FIELD=type
+```
+
+and you receive amutation event of this doc:
+```
+{
+    "value1": "lore ipsum",
+    "value2": "Aliquam amet erat"
+    "type": "NOTE"
+}
+```
+
+You should get the following RabbitMQ message key:
+```
+DOC.NOTE.CHANGE
+```
+
+### Run
 Once all vars are set up, run package with:
 
 ```shell script
