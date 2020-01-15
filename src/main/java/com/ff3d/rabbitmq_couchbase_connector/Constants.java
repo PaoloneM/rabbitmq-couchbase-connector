@@ -16,5 +16,8 @@ class Constants {
     public static final String QUEUE_NAME = "QUEUE_NAME";
     public static final String STATE_FILE_PATH = "STATE_FILE_PATH";
     public static final String STATE_SAVE_DELAY_SEC = "STATE_SAVE_DELAY_SEC";
+    public static final String MESSAGE_KEY="MESSAGE_KEY";
+    public static final String MESSAGE_KEY_TEMPLATE="MESSAGE_KEY_TEMPLATE";
+    public static final String MESSAGE_KEY_FIELD="MESSAGE_KEY_FIELD";
 
 }

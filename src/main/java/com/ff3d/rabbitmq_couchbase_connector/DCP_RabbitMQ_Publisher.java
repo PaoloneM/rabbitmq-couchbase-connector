@@ -19,6 +19,10 @@ public class DCP_RabbitMQ_Publisher implements DCPEventListener {
 
 	private final Channel channel;
 	private final String EXCHANGE_NAME = System.getenv(Constants.EXCHANGE_NAME);
+	private String messageKey = System.getenv(Constants.MESSAGE_KEY);
+	private final String messageKeyTemplate = System.getenv(Constants.MESSAGE_KEY_TEMPLATE);
+	private final String messageKeyField = System.getenv(Constants.MESSAGE_KEY_FIELD);
+	private Boolean renderKey = false;
 
 	public DCP_RabbitMQ_Publisher(final String host, final int port, final String username, final String password)
 			throws IOException, TimeoutException {
@@ -31,29 +35,37 @@ public class DCP_RabbitMQ_Publisher implements DCPEventListener {
 		final Connection connection = factory.newConnection();
 		this.channel = connection.createChannel();
 		System.out.println("EXCHANGE_NAME: " + EXCHANGE_NAME);
-
+        /**
+         * Check message key logic: if specified, MESSAGE_KEY is used as message key,
+         * if not, MESSAGE_KEY_TEMPLATE is rendered with the value of the message field
+         * specified by MESSAGE_KEY_FIELD.
+         * If none of previous is specified, a default value is set
+         */
+        if(messageKey == null || messageKey.length() < 1){
+			renderKey = true;
+        } 
 	}
 
 	public void onEvent(final ByteBuf event) throws UnsupportedEncodingException, IOException {
 		if (DcpMutationMessage.is(event)) {
 			String docJson  = DcpMutationMessage.content(event).toString(CharsetUtil.UTF_8);
 			System.out.println("Mutation: " + docJson);
-
-			JSONTokener tokener =  new JSONTokener(docJson);
-			JSONObject document = new JSONObject(tokener);
-			
-			String type = "";
-			try {
-				type = document.getString("type");
-			} catch (Exception e) {
-				System.out.println(e.getMessage());
+			if(renderKey){
+				JSONTokener tokener =  new JSONTokener(docJson);
+			    JSONObject document = new JSONObject(tokener);
+				String value = "";
+				try {
+					value = document.getString(messageKeyField);
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+				}
+				if(value == null || value.equals("")){
+					value = "UNDEFINED";
+				}
+				messageKey = String.format(messageKeyTemplate, messageKey);
+	
+				System.out.println("Message key: " + messageKey);
 			}
-			if(type == null || type.equals("")){
-				type = "UNDEFINED";
-			}
-			String messageKey = "APT." + type + ".MUTATION";
-
-			System.out.println("Message key: " + messageKey);
 
 			final String message = "{" + "\"_id\": \"" + DcpMutationMessage.keyString(event) + "\", \"body\":"
 					+ DcpMutationMessage.content(event).toString(CharsetUtil.UTF_8) + "}";
