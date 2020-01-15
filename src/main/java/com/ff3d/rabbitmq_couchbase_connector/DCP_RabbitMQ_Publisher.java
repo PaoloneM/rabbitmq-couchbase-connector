@@ -42,6 +42,7 @@ public class DCP_RabbitMQ_Publisher implements DCPEventListener {
          * If none of previous is specified, a default value is set
          */
         if(messageKey == null || messageKey.length() < 1){
+			System.out.println("Message key must be rendered - template: " + messageKeyTemplate + " - field: " + messageKeyField);
 			renderKey = true;
         } 
 	}
@@ -62,7 +63,7 @@ public class DCP_RabbitMQ_Publisher implements DCPEventListener {
 				if(value == null || value.equals("")){
 					value = "UNDEFINED";
 				}
-				messageKey = String.format(messageKeyTemplate, messageKey);
+				messageKey = String.format(messageKeyTemplate, value);
 	
 				System.out.println("Message key: " + messageKey);
 			}

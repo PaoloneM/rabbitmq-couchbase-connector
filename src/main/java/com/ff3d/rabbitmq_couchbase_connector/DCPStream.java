@@ -73,7 +73,7 @@ public class DCPStream implements ConnectorDataEventHandler.ConnectorDataEventHa
 		// Print out Mutations and Deletions
 		ConnectorDataEventHandler dataEventHandler = new ConnectorDataEventHandler(this);
 		dataEventHandler.addEventListener(
-				new DCP_RabbitMQ_Publisher(rabbitHost, rabbitPort, rabbitUsername, rabbitPassword);
+				new DCP_RabbitMQ_Publisher(rabbitHost, rabbitPort, rabbitUsername, rabbitPassword));
 		this.client.dataEventHandler(dataEventHandler);
 
 	}
