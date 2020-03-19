@@ -1,0 +1,40 @@
+
+
+variables:
+  GIT_STRATEGY: clone
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+  CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+
+stages:
+  - build
+  - deploy
+
+build_image:
+  image: docker:stable
+  services:
+    - docker:dind
+  stage: build
+  script:
+    - echo $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
+    - docker build --pull -t $CONTAINER_RELEASE_IMAGE .
+    - docker push $CONTAINER_RELEASE_IMAGE
+  only:
+    - tags
+
+deploy-image:
+  stage: deploy
+  image: alpine
+  script:
+    - apk add curl
+    - |
+      curl --fail -X POST \
+       -F token=${INFRA_K8S_TRIGGER_TOKEN} \
+       -F "ref=quality" \
+       -F "variables[EXTERNAL_APP]=true" \
+       -F "variables[APP_PROJECT_ID]=${CI_PROJECT_ID}" \
+       -F "variables[APP_TAG]=${CI_COMMIT_TAG}" \
+       ${CI_API_V4_URL}/projects/97/trigger/pipeline
+  only:
+    - tags
