@@ -44,7 +44,6 @@ export RABBIT_PORT="<rabbit cluster port>";
 export RABBIT_USER="<rabbit cluster user>";
 export RABBIT_PASSWORD="<rabbit cluster user's password>";
 export EXCHANGE_NAME="exchange name";
-export QUEUE_NAME="queue name";
 export STATE_FILE_PATH="<path to file where DCP stream state will be saved>";
 export STATE_SAVE_DELAY_SEC="10";
 ```
