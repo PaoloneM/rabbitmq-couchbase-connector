@@ -2,6 +2,7 @@ package com.ff3d.rabbitmq_couchbase_connector;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -16,18 +17,22 @@ class CbRabbitConnector {
         System.out.println("Welcome to FF3D.COM Couchbase Rabbit Connector");
 
         System.out.println("******************************Environment Vars*****************************");
-        Map<String, String> env = System.getenv();
-        for (String envName : env.keySet()) {
+        final Map<String, String> env = System.getenv();
+        for (final String envName : env.keySet()) {
             System.out.format("%s=%s%n", envName, env.get(envName));
         }
 
         // Test name resolution if cluster headless server
+        List<String> dinamicHostList = new ArrayList<String>();
         try {
             System.out.println("Resolving cluster addresses");
-            InetAddress SW[]=InetAddress.getAllByName(System.getenv(Constants.COUCHBASE_CLUSTER_SERVICE));
-            for(int i=0;i<SW.length;i++) 
-                System.out.println(SW[i]);
-        } catch (Exception e) {
+            final InetAddress SW[] = InetAddress.getAllByName(System.getenv(Constants.COUCHBASE_CLUSTER_SERVICE));
+            for (int i = 0; i < SW.length; i++){
+                System.out.println(SW[i].getHostName());
+                System.out.println(SW[i].getHostAddress());
+                dinamicHostList.add(SW[i].getHostAddress());
+            }
+        } catch (final Exception e) {
             System.out.println("Error resolving hedless service: " + e.getMessage());
         }
         
