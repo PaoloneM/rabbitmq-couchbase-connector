@@ -1,6 +1,7 @@
 package com.ff3d.rabbitmq_couchbase_connector;
 
 class Constants {
+    public static final String COUCHBASE_CLUSTER_SERVICE = "CB_URL";
     public static final String COUCHBASE_CLUSTER = "CB_URLS";
     public static final String COUCHBASE_BUCKET = "CB_BUCKET";
     public static final String COUCHBASE_BUCKET_USER= "CB_USERNAME";

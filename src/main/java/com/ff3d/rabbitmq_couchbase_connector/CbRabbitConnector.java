@@ -1,6 +1,7 @@
 package com.ff3d.rabbitmq_couchbase_connector;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -12,6 +13,10 @@ class CbRabbitConnector {
     public static void main(String[] args) throws IOException, TimeoutException {
 
         System.out.println("Welcome to FF3D.COM Couchbase Rabbit Connector");
+
+        // Test name resolution if cluster headless server
+        InetAddress address = InetAddress.getByName(Constants.COUCHBASE_CLUSTER_SERVICE); 
+        System.out.println(address.getHostAddress()); 
 
         String list = System.getenv(Constants.COUCHBASE_CLUSTER);
         List<String> couchbaseCluster = Arrays.asList(list.split(","));
