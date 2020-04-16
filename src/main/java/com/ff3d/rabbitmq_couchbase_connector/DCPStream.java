@@ -50,14 +50,13 @@ public class DCPStream implements ConnectorDataEventHandler.ConnectorDataEventHa
 
 		this.stateHelper = new DcpStateHelper(stateFilename + "DCP-" + bucket + "-status.json");
 		
-		this.client = Client.configure()
+		this.client = Client.builder()
 				.connectionNameGenerator(DefaultConnectionNameGenerator.forProduct("rabbit-connector", "0.0.1"))
 				.connectTimeout(connectionTimeout)
 				.hostnames(clusters)
 				.networkResolution(networkResolution)
 				.bucket(bucket)
-				.username(bucketUsername)
-				.password(bucketPassword)
+				.credentials(bucketUsername, bucketPassword)
 				.controlParam(DcpControl.Names.ENABLE_NOOP, "true")
 				.compression(compressionMode)
 				.mitigateRollbacks(persistencePollingIntervalMillis, TimeUnit.MILLISECONDS)
