@@ -23,22 +23,23 @@ class CbRabbitConnector {
         }
 
         // Test name resolution if cluster headless server
-        List<String> dinamicHostList = new ArrayList<String>();
+        List<String> dynamicHostList = new ArrayList<String>();
         try {
             System.out.println("Resolving cluster addresses");
             final InetAddress SW[] = InetAddress.getAllByName(System.getenv(Constants.COUCHBASE_CLUSTER_SERVICE));
             for (int i = 0; i < SW.length; i++){
                 System.out.println(SW[i].getHostName());
                 System.out.println(SW[i].getHostAddress());
-                dinamicHostList.add(SW[i].getHostAddress());
+                dynamicHostList.add(SW[i].getHostAddress());
             }
         } catch (final Exception e) {
             System.out.println("Error resolving hedless service: " + e.getMessage());
         }
-        
+
 
         final String list = System.getenv(Constants.COUCHBASE_CLUSTER);
-        final List<String> couchbaseCluster = Arrays.asList(list.split(","));
+        List<String> couchbaseCluster = Arrays.asList(list.split(","));
+        if (dynamicHostList != null && dynamicHostList.size() >= 1) couchbaseCluster = dynamicHostList;
         final String bucket = System.getenv(Constants.COUCHBASE_BUCKET);
         final String bucketUser = System.getenv(Constants.COUCHBASE_BUCKET_USER);
         final String bucketPassword = System.getenv(Constants.COUCHBASE_BUCKET_PASSWORD);
