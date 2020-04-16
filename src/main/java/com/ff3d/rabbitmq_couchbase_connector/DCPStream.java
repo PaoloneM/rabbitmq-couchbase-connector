@@ -123,6 +123,7 @@ public class DCPStream implements ConnectorDataEventHandler.ConnectorDataEventHa
 					}
 
 					public void onSubscribe(Subscription d) {
+						System.out.println("Rollback onSubscribe");
 					}
 				});
 	}

@@ -26,10 +26,12 @@ public class ConnectorControlEventHandler implements ControlEventHandler {
     public void onEvent(ChannelFlowController flowController, ByteBuf event) {
 
         if (DcpSnapshotMarkerRequest.is(event)) {
+            System.out.println("DcpSnapshotMarkerRequest event: " + DcpSnapshotMarkerRequest.toString(event));
             flowController.ack(event);
         }
 
         if (RollbackMessage.is(event)) {
+            System.out.println("RollbackMessage event");
             final short partition = RollbackMessage.vbucket(event);
             stream.onRollbackMessageReceived(partition, RollbackMessage.seqno(event));
         }

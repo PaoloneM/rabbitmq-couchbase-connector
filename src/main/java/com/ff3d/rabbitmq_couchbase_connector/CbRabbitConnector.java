@@ -39,7 +39,10 @@ class CbRabbitConnector {
 
         final String list = System.getenv(Constants.COUCHBASE_CLUSTER);
         List<String> couchbaseCluster = Arrays.asList(list.split(","));
-        if (dynamicHostList != null && dynamicHostList.size() >= 1) couchbaseCluster = dynamicHostList;
+        if (dynamicHostList != null && dynamicHostList.size() >= 1) {
+            couchbaseCluster = dynamicHostList;
+            System.out.println("Using dynamic address list");
+        }
         final String bucket = System.getenv(Constants.COUCHBASE_BUCKET);
         final String bucketUser = System.getenv(Constants.COUCHBASE_BUCKET_USER);
         final String bucketPassword = System.getenv(Constants.COUCHBASE_BUCKET_PASSWORD);
