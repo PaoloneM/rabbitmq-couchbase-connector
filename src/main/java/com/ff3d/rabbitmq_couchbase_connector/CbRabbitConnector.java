@@ -23,8 +23,10 @@ class CbRabbitConnector {
 
         // Test name resolution if cluster headless server
         try {
-            final InetAddress address = InetAddress.getByName(System.getenv(Constants.COUCHBASE_CLUSTER_SERVICE));
-            System.out.println(address.getHostAddress());
+            System.out.println("Resolving cluster addresses");
+            InetAddress SW[]=InetAddress.getAllByName(System.getenv(Constants.COUCHBASE_CLUSTER_SERVICE));
+            for(int i=0;i<SW.length;i++) 
+                System.out.println(SW[i]);
         } catch (Exception e) {
             System.out.println("Error resolving hedless service: " + e.getMessage());
         }
