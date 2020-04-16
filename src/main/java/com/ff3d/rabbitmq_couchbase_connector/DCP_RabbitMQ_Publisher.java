@@ -75,6 +75,8 @@ public class DCP_RabbitMQ_Publisher implements DCPEventListener {
 
 		} else if (DcpDeletionMessage.is(event)) {
 			System.out.println("Deletion: " + DcpDeletionMessage.toString(event));
+		} else {
+			System.err.println("Uknown data event");
 		}
 	}
 }
