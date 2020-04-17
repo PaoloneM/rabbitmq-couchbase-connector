@@ -19,5 +19,6 @@ class Constants {
     public static final String MESSAGE_KEY="MESSAGE_KEY";
     public static final String MESSAGE_KEY_TEMPLATE="MESSAGE_KEY_TEMPLATE";
     public static final String MESSAGE_KEY_FIELD="MESSAGE_KEY_FIELD";
+	public static final Object CLIENT_NAME = "Couchbase Connector";
 
 }

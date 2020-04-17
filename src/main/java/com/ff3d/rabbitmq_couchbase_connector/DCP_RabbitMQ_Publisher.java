@@ -2,6 +2,7 @@ package com.ff3d.rabbitmq_couchbase_connector;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
 
 import com.couchbase.client.dcp.message.DcpDeletionMessage;
@@ -24,6 +25,7 @@ public class DCP_RabbitMQ_Publisher implements DCPEventListener {
 	private final String messageKeyField = System.getenv(Constants.MESSAGE_KEY_FIELD);
 	private Boolean renderKey = false;
 
+
 	public DCP_RabbitMQ_Publisher(final String host, final int port, final String username, final String password)
 			throws IOException, TimeoutException {
 		final ConnectionFactory factory = new ConnectionFactory();
@@ -31,6 +33,9 @@ public class DCP_RabbitMQ_Publisher implements DCPEventListener {
 		factory.setPassword(password);
 		factory.setHost(host);
 		factory.setPort(port);
+		HashMap<String,Object> clientProperties = new HashMap<String,Object>();
+		clientProperties.put("connection_name", Constants.CLIENT_NAME + " - " + System.getenv("HOSTNAME"));
+		factory.setClientProperties(clientProperties);
 		System.out.println("username: " + username + " - password: " + password);
 		final Connection connection = factory.newConnection();
 		this.channel = connection.createChannel();
