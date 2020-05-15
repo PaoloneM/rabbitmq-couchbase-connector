@@ -73,6 +73,7 @@ class CbRabbitConnector {
                     } catch (final IOException e) {
                         e.printStackTrace();
                     }
+                    System.exit(3);
                 }
             }));
         } catch (final Exception e) {
