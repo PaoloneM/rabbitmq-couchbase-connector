@@ -20,5 +20,7 @@ class Constants {
     public static final String MESSAGE_KEY_TEMPLATE="MESSAGE_KEY_TEMPLATE";
     public static final String MESSAGE_KEY_FIELD="MESSAGE_KEY_FIELD";
 	public static final Object CLIENT_NAME = "Couchbase Connector";
-
+	public static final int RMQ_CONN_MAX_RETRY = 3;
+	public static final int RMQ_HEARTBEAT = 10;
+	public static final int RMQ_TIMEOUT = 15000;
 }

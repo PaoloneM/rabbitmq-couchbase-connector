@@ -87,7 +87,7 @@ public class DCPStream implements ConnectorDataEventHandlerCallback, ConnectorCo
 		new java.util.Timer().schedule(new java.util.TimerTask() {
 			@Override
 			public void run() {
-				System.exit(4);
+				Runtime.getRuntime().halt(2);
 			}
 		}, 5000);
 		client.disconnect().await();
