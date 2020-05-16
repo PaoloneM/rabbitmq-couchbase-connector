@@ -3,7 +3,7 @@
 
   <groupId>com.ff3d.rabbitmq_couchbase_connector</groupId>
   <artifactId>rabbitmq_couchbase_connector</artifactId>
-  <version>0.2.0</version>
+  <version>0.10.0</version>
   <packaging>jar</packaging>
 
   <name>rabbitmq-couchbase-connector</name>

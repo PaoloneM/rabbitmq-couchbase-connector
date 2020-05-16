@@ -1,4 +1,4 @@
-package com.ff3d.rabbitmq_couchbase_connector;
+package com.ff3d.rabbitmq_couchbase_connector.handlers;
 
 import com.couchbase.client.dcp.ControlEventHandler;
 import com.couchbase.client.dcp.message.DcpSnapshotMarkerRequest;
@@ -28,14 +28,14 @@ public class ConnectorControlEventHandler implements ControlEventHandler {
         if (DcpSnapshotMarkerRequest.is(event)) {
             System.out.println("DcpSnapshotMarkerRequest event: " + DcpSnapshotMarkerRequest.toString(event));
             flowController.ack(event);
-        }
-
-        if (RollbackMessage.is(event)) {
+        } else if (RollbackMessage.is(event)) {
             System.out.println("RollbackMessage event");
             final short partition = RollbackMessage.vbucket(event);
             stream.onRollbackMessageReceived(partition, RollbackMessage.seqno(event));
+        } else {
+            System.out.println("Other event: " + event.toString()); 
+            flowController.ack(event);
         }
-
         event.release();
     }
 
