@@ -1,4 +1,4 @@
-package com.ff3d.rabbitmq_couchbase_connector;
+package com.ff3d.rabbitmq_couchbase_connector.handlers;
 
 import com.couchbase.client.dcp.ControlEventHandler;
 import com.couchbase.client.dcp.message.DcpSnapshotMarkerRequest;

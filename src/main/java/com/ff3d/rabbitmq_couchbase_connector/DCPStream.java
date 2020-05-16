@@ -17,16 +17,20 @@ import com.couchbase.client.dcp.state.StateFormat;
 import com.couchbase.client.dcp.events.StreamEndEvent;
 import rx.CompletableSubscriber;
 import rx.Subscription;
-import com.ff3d.rabbitmq_couchbase_connector.handlers.ConnectorSystemEventHandler;
 import com.ff3d.rabbitmq_couchbase_connector.handlers.ConnectorSystemEventHandler.ConnectorSystemEventHandlerCallback;
+import com.ff3d.rabbitmq_couchbase_connector.handlers.ConnectorControlEventHandler;
+import com.ff3d.rabbitmq_couchbase_connector.handlers.ConnectorDataEventHandler;
+import com.ff3d.rabbitmq_couchbase_connector.handlers.ConnectorSystemEventHandler;
+import com.ff3d.rabbitmq_couchbase_connector.handlers.ConnectorControlEventHandler.ConnectorControlEventHandlerCallback;
+import com.ff3d.rabbitmq_couchbase_connector.handlers.ConnectorDataEventHandler.ConnectorDataEventHandlerCallback;
 
 /**
  * This class handles DCP connection to Couchbase an attaches handlers to events
  * 
  * Author: P. Morgano
  */
-public class DCPStream implements ConnectorDataEventHandler.ConnectorDataEventHandlerCallback,
-		ConnectorControlEventHandler.ConnectorControlEventHandlerCallback, ConnectorSystemEventHandlerCallback {
+public class DCPStream implements ConnectorDataEventHandlerCallback, ConnectorControlEventHandlerCallback,
+		ConnectorSystemEventHandlerCallback {
 
 	private Client client;
 	private DcpStateHelper stateHelper;
@@ -47,8 +51,7 @@ public class DCPStream implements ConnectorDataEventHandler.ConnectorDataEventHa
 				.connectTimeout(connectionTimeout).hostnames(clusters).networkResolution(networkResolution)
 				.bucket(bucket).credentials(bucketUsername, bucketPassword)
 				.controlParam(DcpControl.Names.ENABLE_NOOP, "true")
-				.controlParam(DcpControl.Names.SET_NOOP_INTERVAL, "120")
-				.compression(compressionMode)
+				.controlParam(DcpControl.Names.SET_NOOP_INTERVAL, "120").compression(compressionMode)
 				.mitigateRollbacks(persistencePollingIntervalMillis, TimeUnit.MILLISECONDS)
 				.flowControl(flowControlBufferBytes).bufferAckWatermark(60).sslEnabled(false).build();
 		;
@@ -127,7 +130,7 @@ public class DCPStream implements ConnectorDataEventHandler.ConnectorDataEventHa
 		System.out.println("Couchbase System Event received: " + event.toString());
 		if (event instanceof StreamEndEvent) {
 			StreamEndEvent streamEnd = (StreamEndEvent) event;
-		    System.out.println("Stream ended: " + streamEnd.toString());
+			System.out.println("Stream ended: " + streamEnd.toString());
 		}
 	}
 

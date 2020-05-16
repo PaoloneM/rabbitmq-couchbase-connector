@@ -1,4 +1,4 @@
-package com.ff3d.rabbitmq_couchbase_connector;
+package com.ff3d.rabbitmq_couchbase_connector.handlers;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -10,6 +10,7 @@ import com.couchbase.client.dcp.message.MessageUtil;
 import com.couchbase.client.dcp.DataEventHandler;
 import com.couchbase.client.dcp.transport.netty.ChannelFlowController;
 import com.couchbase.client.deps.io.netty.buffer.ByteBuf;
+import com.ff3d.rabbitmq_couchbase_connector.DCPEventListener;
 
 /**
  * Data event handler class, delegates event actions to registered listeners,
