@@ -2,6 +2,9 @@ package com.ff3d.rabbitmq_couchbase_connector;
 
 import com.couchbase.client.dcp.Client;
 import com.couchbase.client.dcp.state.StateFormat;
+import com.ff3d.rabbitmq_couchbase_connector.model.DcpStateHelperConfig;
+import com.rabbitmq.client.Return;
+
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -14,18 +17,32 @@ import java.io.IOException;
  */
 public class DcpStateHelper {
 
-    private final String stateFilename;
+    private final DcpStateHelperConfig config;
 
-    public DcpStateHelper(String stateFilename) {
-        this.stateFilename = stateFilename;
+    public DcpStateHelper(final DcpStateHelperConfig config) {
+        this.config = config;
     }
 
     public byte[] loadState() throws IOException {
+        switch (this.config.getStrategy()) {
+            case FILE:
+                return loadStateFromFile();
+            case COUCHBASE:
+                return loadStateFromCouchbase();
+            default:
+                throw new Error("Unknown state persistence strategy");
+        }
+    }
 
-        File file = new File(this.stateFilename);
+    public byte[] loadStateFromCouchbase() throws IOException {
+        return null;
+    }
+
+    public byte[] loadStateFromFile() throws IOException {
+        final File file = new File(this.config.getFilename());
         byte[] persisted = null;
         if (file.exists()) {
-            FileInputStream fis = new FileInputStream(this.stateFilename);
+            final FileInputStream fis = new FileInputStream(this.config.getFilename());
             persisted = IOUtils.toByteArray(fis);
             fis.close();
         }
@@ -33,21 +50,37 @@ public class DcpStateHelper {
 
     }
 
-    public void saveState(Client client) throws IOException {
+    public void saveState(final Client client) throws IOException {
+        switch (this.config.getStrategy()) {
+            case FILE:
+                saveStateToFile(client);
+                break;
+            case COUCHBASE:
+                saveStateToCouchbase(client);
+                break;
+            default:
+                throw new Error("Unknown state persistence strategy");
+        }
+    }
+
+    public void saveStateToFile(final Client client) throws IOException {
 
         // export the state as a JSON byte array
         final byte[] state = client.sessionState().export(StateFormat.JSON);
 
-        AsyncStateSaver saver = new AsyncStateSaver(state, this.stateFilename);
+        final AsyncStateFileSaver saver = new AsyncStateFileSaver(state, this.config.getFilename());
         saver.run();
 
     }
 
-    public class AsyncStateSaver implements Runnable {
+    public void saveStateToCouchbase(final Client client) throws IOException {
 
-        public AsyncStateSaver(byte[] state, String stateFilename) throws IOException {
+    }
+    public class AsyncStateFileSaver implements Runnable {
+
+        public AsyncStateFileSaver(final byte[] state, final String stateFilename) throws IOException {
             // Write it to a file
-            FileOutputStream output = new FileOutputStream(new File(stateFilename));
+            final FileOutputStream output = new FileOutputStream(new File(stateFilename));
             IOUtils.write(state, output);
             output.close();
 

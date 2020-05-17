@@ -10,6 +10,7 @@ import java.util.concurrent.TimeoutException;
 
 import com.couchbase.client.core.env.NetworkResolution;
 import com.couchbase.client.dcp.config.CompressionMode;
+import com.ff3d.rabbitmq_couchbase_connector.model.DcpStateHelperConfig;
 
 class CbRabbitConnector {
     public static void main(final String[] args) throws IOException, TimeoutException {
@@ -27,7 +28,7 @@ class CbRabbitConnector {
         try {
             System.out.println("Resolving cluster addresses");
             final InetAddress SW[] = InetAddress.getAllByName(System.getenv(Constants.COUCHBASE_CLUSTER_SERVICE));
-            for (int i = 0; i < SW.length; i++){
+            for (int i = 0; i < SW.length; i++) {
                 System.out.println(SW[i].getHostName());
                 System.out.println(SW[i].getHostAddress());
                 dynamicHostList.add(SW[i].getHostAddress());
@@ -35,7 +36,6 @@ class CbRabbitConnector {
         } catch (final Exception e) {
             System.out.println("Error resolving hedless service: " + e.getMessage());
         }
-
 
         final String list = System.getenv(Constants.COUCHBASE_CLUSTER);
         List<String> couchbaseCluster = Arrays.asList(list.split(","));
@@ -54,6 +54,11 @@ class CbRabbitConnector {
         final String rabbitUser = System.getenv(Constants.RABBIT_USER);
         final String rabbitPassword = System.getenv(Constants.RABBIT_PASSWORD);
         final String stateFilePath = System.getenv(Constants.STATE_FILE_PATH);
+        final String stateBucket = System.getenv(Constants.STATE_CB_BUCKET);
+        final String stateBucketUser = System.getenv(Constants.STATE_CB_BUCKET_USER);
+        final String stateBucketPassword = System.getenv(Constants.STATE_CB_BUCKET_PWD);
+        final DcpStateHelperConfig.StateSaveStrategy stateStrategy = DcpStateHelperConfig.StateSaveStrategy
+                .valueOf(System.getenv(Constants.STATE_SAVE_STRATEGY));
 
         final DCPStream stream = new DCPStream();
 
@@ -61,7 +66,7 @@ class CbRabbitConnector {
 
         stream.init(couchbaseCluster, bucket, bucketUser, bucketPassword, cbConnectionTimeout, NetworkResolution.AUTO,
                 CompressionMode.ENABLED, cbPersistencePollIntv, flowCtrlBuffBytes, rabbitHost, rabbitPort, rabbitUser,
-                rabbitPassword, stateFilePath);
+                rabbitPassword, stateFilePath, stateBucket, stateBucketUser, stateBucketPassword, stateStrategy);
 
         System.out.println("Starting stream");
         try {

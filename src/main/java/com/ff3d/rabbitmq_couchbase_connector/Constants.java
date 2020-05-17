@@ -13,8 +13,12 @@ class Constants {
     public static final String RABBIT_PORT = "RMQ_PORT";
     public static final String RABBIT_USER = "RMQ_USERNAME";
     public static final String RABBIT_PASSWORD = "RMQ_PWD";
-	public static final String EXCHANGE_NAME = "RMQ_CB_MUTATIONS_EXCHANGE";
+    public static final String EXCHANGE_NAME = "RMQ_CB_MUTATIONS_EXCHANGE";
+    public static final String STATE_SAVE_STRATEGY = "STATE_SAVE_STRATEGY";
     public static final String STATE_FILE_PATH = "STATE_FILE_PATH";
+    public static final String STATE_CB_BUCKET = "CB_BUCKET";
+    public static final String STATE_CB_BUCKET_USER = "CB_USERNAME";
+    public static final String STATE_CB_BUCKET_PWD= "CB_PWD";
     public static final String STATE_SAVE_DELAY_SEC = "STATE_SAVE_DELAY_SEC";
     public static final String MESSAGE_KEY="MESSAGE_KEY";
     public static final String MESSAGE_KEY_TEMPLATE="MESSAGE_KEY_TEMPLATE";

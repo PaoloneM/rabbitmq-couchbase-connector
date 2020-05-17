@@ -18,6 +18,7 @@ import com.couchbase.client.dcp.events.StreamEndEvent;
 import rx.CompletableSubscriber;
 import rx.Subscription;
 import com.ff3d.rabbitmq_couchbase_connector.handlers.ConnectorSystemEventHandler.ConnectorSystemEventHandlerCallback;
+import com.ff3d.rabbitmq_couchbase_connector.model.DcpStateHelperConfig;
 import com.ff3d.rabbitmq_couchbase_connector.handlers.ConnectorControlEventHandler;
 import com.ff3d.rabbitmq_couchbase_connector.handlers.ConnectorDataEventHandler;
 import com.ff3d.rabbitmq_couchbase_connector.handlers.ConnectorSystemEventHandler;
@@ -40,11 +41,15 @@ public class DCPStream implements ConnectorDataEventHandlerCallback, ConnectorCo
 	public void init(List<String> clusters, String bucket, String bucketUsername, String bucketPassword,
 			long connectionTimeout, NetworkResolution networkResolution, CompressionMode compressionMode,
 			long persistencePollingIntervalMillis, int flowControlBufferBytes, String rabbitHost, int rabbitPort,
-			String rabbitUsername, String rabbitPassword, String stateFilename) throws IOException, TimeoutException {
+			String rabbitUsername, String rabbitPassword, String stateFilename, String stateBucket,
+			String stateBucketUser, String stateBucketPassword, DcpStateHelperConfig.StateSaveStrategy stateStrategy)
+			throws IOException, TimeoutException {
 
 		System.out.println("Cb credentials: " + bucket + " - " + bucketUsername + " - " + bucketPassword);
 
-		this.stateHelper = new DcpStateHelper(stateFilename + "DCP-" + bucket + "-status.json");
+		DcpStateHelperConfig helperConfig = new DcpStateHelperConfig(stateFilename, stateBucket, stateBucketUser,
+				stateBucketPassword, stateStrategy);
+		this.stateHelper = new DcpStateHelper(helperConfig);
 
 		this.client = Client.builder()
 				.connectionNameGenerator(DefaultConnectionNameGenerator.forProduct("rabbit-connector", "0.0.1"))
