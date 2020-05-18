@@ -3,7 +3,9 @@ package com.ff3d.rabbitmq_couchbase_connector;
 import com.couchbase.client.dcp.Client;
 import com.couchbase.client.dcp.state.StateFormat;
 import com.ff3d.rabbitmq_couchbase_connector.model.DcpStateHelperConfig;
-import com.rabbitmq.client.Return;
+import com.ff3d.rabbitmq_couchbase_connector.model.DcpStateHelperConfig.StateSaveStrategy;
+import com.couchbase.client.java.*;
+import com.couchbase.client.java.json.JsonObject;
 
 import org.apache.commons.io.IOUtils;
 
@@ -18,10 +20,26 @@ import java.io.IOException;
 public class DcpStateHelper {
 
     private final DcpStateHelperConfig config;
+    private Cluster cluster;
+    private Bucket bucket;
+    private Collection collection;
+
+    private byte[] state;
+    private String stringState;
 
     public DcpStateHelper(final DcpStateHelperConfig config) {
         this.config = config;
+        if (config.getStrategy() == StateSaveStrategy.COUCHBASE){
+            initCouchbaseClient(config);
+        }
     }
+
+    private void initCouchbaseClient(DcpStateHelperConfig config) {
+        cluster = Cluster.connect(config.getCluster(), config.getUser(), config.getPassword());
+        bucket = cluster.bucket(config.getBucket());
+        collection = bucket.defaultCollection();
+    }
+
 
     public byte[] loadState() throws IOException {
         switch (this.config.getStrategy()) {
@@ -53,7 +71,8 @@ public class DcpStateHelper {
     public void saveState(final Client client) throws IOException {
         switch (this.config.getStrategy()) {
             case FILE:
-                saveStateToFile(client);
+
+            saveStateToFile(client);
                 break;
             case COUCHBASE:
                 saveStateToCouchbase(client);
@@ -74,6 +93,12 @@ public class DcpStateHelper {
     }
 
     public void saveStateToCouchbase(final Client client) throws IOException {
+
+        System.out.println("*** Saving state to Couchbase ***");
+        // export the state as a JSON byte array
+        state = client.sessionState().export(StateFormat.JSON);
+        stringState = new String(state);
+        collection.upsert(config.getStateDocKey(), JsonObject.fromJson(stringState));
 
     }
     public class AsyncStateFileSaver implements Runnable {

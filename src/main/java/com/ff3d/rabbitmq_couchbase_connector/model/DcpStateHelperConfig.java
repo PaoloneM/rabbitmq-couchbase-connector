@@ -8,17 +8,21 @@ public class DcpStateHelperConfig {
     }
 
     private String filename;
+    private String cluster;
     private String bucket;
     private String user;
     private String password;
     private StateSaveStrategy strategy;
+    private String stateDocKey;
 
-    public DcpStateHelperConfig(String stateFilename, String bucket, String user, String password, StateSaveStrategy strategy) {
+    public DcpStateHelperConfig(String stateFilename, String cluster, String bucket, String user, String password, StateSaveStrategy strategy, String stateDocPrefix) {
         this.filename = stateFilename + "DCP-" + bucket + "-status.json";
+        this.cluster = cluster;
         this.bucket = bucket;
         this.user = user;
         this.password = password;
         this.strategy = strategy;
+        this.stateDocKey = stateDocPrefix;
     }
 
     /**
@@ -89,6 +93,34 @@ public class DcpStateHelperConfig {
      */
     public void setStrategy(StateSaveStrategy strategy) {
         this.strategy = strategy;
+    }
+
+    /**
+     * @return the cluster
+     */
+    public String getCluster() {
+        return cluster;
+    }
+
+    /**
+     * @param cluster the cluster to set
+     */
+    public void setCluster(String cluster) {
+        this.cluster = cluster;
+    }
+
+    /**
+     * @return the stateDocPrefix
+     */
+    public String getStateDocKey() {
+        return stateDocKey;
+    }
+
+    /**
+     * @param stateDocKey the stateDocPrefix to set
+     */
+    public void setStateDocKey(String stateDocKey) {
+        this.stateDocKey = stateDocKey;
     }
 
     

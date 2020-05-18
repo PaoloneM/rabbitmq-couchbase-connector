@@ -19,11 +19,13 @@ class Constants {
     public static final String STATE_CB_BUCKET = "CB_BUCKET";
     public static final String STATE_CB_BUCKET_USER = "CB_USERNAME";
     public static final String STATE_CB_BUCKET_PWD= "CB_PWD";
+    public static final String STATE_CB_DOC_PREFIX = "STATE::";
+    public static final String STATE_CB_DOC_SUFFIX = "STATE_CB_DOC_SUFFIX";
     public static final String STATE_SAVE_DELAY_SEC = "STATE_SAVE_DELAY_SEC";
     public static final String MESSAGE_KEY="MESSAGE_KEY";
     public static final String MESSAGE_KEY_TEMPLATE="MESSAGE_KEY_TEMPLATE";
     public static final String MESSAGE_KEY_FIELD="MESSAGE_KEY_FIELD";
-	public static final Object CLIENT_NAME = "Couchbase Connector";
+	public static final String CLIENT_NAME = "Couchbase Connector";
 	public static final int RMQ_CONN_MAX_RETRY = 3;
 	public static final int RMQ_HEARTBEAT = 10;
 	public static final int RMQ_TIMEOUT = 15000;

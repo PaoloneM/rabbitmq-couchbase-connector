@@ -38,17 +38,17 @@ public class DCPStream implements ConnectorDataEventHandlerCallback, ConnectorCo
 	private long lastStateSaveTime = System.currentTimeMillis();
 	private final int saveDelay = Integer.parseInt(System.getenv(Constants.STATE_SAVE_DELAY_SEC)) * 1000;
 
-	public void init(List<String> clusters, String bucket, String bucketUsername, String bucketPassword,
+	public void init(String cluster, List<String> clusters, String bucket, String bucketUsername, String bucketPassword,
 			long connectionTimeout, NetworkResolution networkResolution, CompressionMode compressionMode,
 			long persistencePollingIntervalMillis, int flowControlBufferBytes, String rabbitHost, int rabbitPort,
 			String rabbitUsername, String rabbitPassword, String stateFilename, String stateBucket,
-			String stateBucketUser, String stateBucketPassword, DcpStateHelperConfig.StateSaveStrategy stateStrategy)
+			String stateBucketUser, String stateBucketPassword, DcpStateHelperConfig.StateSaveStrategy stateStrategy, String stateDocKey)
 			throws IOException, TimeoutException {
 
 		System.out.println("Cb credentials: " + bucket + " - " + bucketUsername + " - " + bucketPassword);
 
-		DcpStateHelperConfig helperConfig = new DcpStateHelperConfig(stateFilename, stateBucket, stateBucketUser,
-				stateBucketPassword, stateStrategy);
+		DcpStateHelperConfig helperConfig = new DcpStateHelperConfig(stateFilename, cluster, stateBucket, stateBucketUser,
+				stateBucketPassword, stateStrategy, stateDocKey);
 		this.stateHelper = new DcpStateHelper(helperConfig);
 
 		this.client = Client.builder()
